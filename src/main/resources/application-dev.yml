@@ -1,0 +1,31 @@
+# ################### #
+# 开发环境的Profile配置 #
+# ################### #
+
+# 服务器配置
+server:
+  # 服务端口
+  port: 9081
+
+# Spring相关配置
+spring:
+  # 数据源相关配置
+  datasource:
+    # 连接数据库的URL
+    url: jdbc:mysql://localhost:3306/mall_ams?characterEncoding=utf-8&useUnicode=true&serverTimezone=Asia/Shanghai
+    # 登录数据库的用户名
+    username: root
+    # 登录数据库的密码
+    password: root
+
+# 日志相关配置
+logging:
+  # 日志的显示级别
+  level:
+    # 包（package）
+    cn.tedu.csmall: trace
+
+# Knife4j配置
+knife4j:
+  # 屏蔽生产环境
+  production: false
