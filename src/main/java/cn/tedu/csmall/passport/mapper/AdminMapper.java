@@ -99,11 +99,10 @@ public interface AdminMapper {
     /**
      * 根据管理员name查询管理员数据详情
      *
-     * @param name 管理员name
+     * @param username 管理员name
      * @return 匹配的管理员数据详情，如果没有匹配的数据，则返回null
      */
-    AdminLoginVO getStandardName(Long name);
-
+    AdminLoginVO getStandardByName(String username);
     /**
      * 查询管理员数据列表
      *

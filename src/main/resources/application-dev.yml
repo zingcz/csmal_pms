@@ -16,7 +16,7 @@ spring:
     # 登录数据库的用户名
     username: root
     # 登录数据库的密码
-    password: root
+    password: 123
 
 # 日志相关配置
 logging:

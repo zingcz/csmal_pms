@@ -1,6 +1,7 @@
 package cn.tedu.csmall.passport.mapper;
 
 import cn.tedu.csmall.passport.pojo.entity.Admin;
+import cn.tedu.csmall.passport.pojo.vo.AdminLoginVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,13 @@ public class AdminMapperTests {
         Long id = 1L;
         Object queryResult = mapper.getStandardById(id);
         log.debug("根据id【{}】查询数据详情完成，查询结果：{}", id, queryResult);
+    }
+
+    @Test
+    void getAdminLoginByName() {
+        String name = "root";
+        AdminLoginVO queryResult = mapper.getStandardByName(name);
+        log.debug("根据name【{}】查询数据详情完成，查询结果：{}", name, queryResult);
     }
 
     @Test
