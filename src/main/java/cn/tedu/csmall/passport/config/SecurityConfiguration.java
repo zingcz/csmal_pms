@@ -27,7 +27,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/**/*.css",
             "/swagger-resources",
             "/v2/api-docs",
-            "/admins/login"
+
+            "/admins/list"
     };
     @Override
     protected void configure(HttpSecurity http) throws Exception{
@@ -36,5 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 permitAll().
                 anyRequest().authenticated();
         http.formLogin();
+        http.csrf().disable();
     }
 }

@@ -5,6 +5,7 @@ import cn.tedu.csmall.passport.mapper.AdminMapper;
 import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
 import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
 import cn.tedu.csmall.passport.pojo.entity.Admin;
+import cn.tedu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.tedu.csmall.passport.pojo.vo.AdminLoginVO;
 import cn.tedu.csmall.passport.service.IAdminService;
 import cn.tedu.csmall.passport.web.ServiceCode;
@@ -14,7 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 处理管理员数据的业务实现类
@@ -36,12 +41,15 @@ public class AdminServiceImpl implements IAdminService {
         log.debug("创建业务对象：AdminServiceImpl");
     }
 
-//    @Override
-//    public void login(AdminLoginDTO adminLoginDTO){
-//        AdminLoginVO adminLoginVO = adminMapper.getStandardByName(adminLoginDTO.getUsername());
-//        Authentication authentication = new UsernamePasswordAuthenticationToken(adminLoginVO.getUsername(),adminLoginVO.getPassword());
-//        authenticationManager.authenticate(authentication);
-//    }
+    @Override
+    public void login(AdminLoginDTO adminLoginDTO){
+        Authentication authentication = new UsernamePasswordAuthenticationToken(adminLoginDTO.getUsername(),adminLoginDTO.getPassword());
+        Authentication authenticationResult = authenticationManager.authenticate(authentication);
+        log.debug("认证通过，认证结果：{}", authenticationResult);
+        log.debug("认证通过，认证结果中的当事人：{}", authenticationResult.getPrincipal());
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        securityContext.setAuthentication(authenticationResult);
+    }
     @Override
     public void addNew(AdminAddNewDTO adminAddNewDTO) {
         log.debug("开始处理【添加管理员】的业务，参数：{}", adminAddNewDTO);
@@ -103,4 +111,8 @@ public class AdminServiceImpl implements IAdminService {
         }
     }
 
+    @Override
+    public List<AdminListItemVO> list(){
+        return adminMapper.list();
+    }
 }

@@ -3,7 +3,6 @@ package cn.tedu.csmall.passport.security;
 import cn.tedu.csmall.passport.mapper.AdminMapper;
 import cn.tedu.csmall.passport.pojo.vo.AdminLoginVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         log.debug("Spring Security调用了loadUserByUsername()方法，参数：{}", s);
 
-         AdminLoginVO loginInfo = adminMapper.getStandardByName(s);
+         AdminLoginVO loginInfo = adminMapper.getLoginInfoByUsername(s);
         log.debug("从数据库查询用户名【{}】匹配的信息，结果：{}", s, loginInfo);
 
         if (loginInfo == null) {

@@ -2,7 +2,10 @@ package cn.tedu.csmall.passport.service;
 
 import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
 import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
+import cn.tedu.csmall.passport.pojo.vo.AdminListItemVO;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 处理管理员数据的业务接口
@@ -25,5 +28,11 @@ public interface IAdminService {
      *
      * @param adminAddNewDTO 管理员数据
      */
-//    void login(AdminLoginDTO adminAddNewDTO);
+    void login(AdminLoginDTO adminAddNewDTO);
+    /**
+     * 查询管理员列表
+     *
+     *
+     */
+    List<AdminListItemVO> list();
 }

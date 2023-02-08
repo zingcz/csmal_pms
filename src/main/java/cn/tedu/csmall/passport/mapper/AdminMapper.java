@@ -102,7 +102,7 @@ public interface AdminMapper {
      * @param username 管理员name
      * @return 匹配的管理员数据详情，如果没有匹配的数据，则返回null
      */
-    AdminLoginVO getStandardByName(String username);
+    AdminLoginVO getLoginInfoByUsername(String username);
     /**
      * 查询管理员数据列表
      *

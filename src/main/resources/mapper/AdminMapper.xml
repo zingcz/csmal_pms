@@ -118,11 +118,14 @@
     </select>
 
     <!-- AdminLoginVO getStandardByName(String username); -->
-    <select id="getStandardByName" resultMap="AdminLoginResultMap">
+    <select id="getLoginInfoByUsername" resultMap="AdminLoginResultMap">
         SELECT
         <include refid="AdminLoginQueryFields"/>
         FROM
         ams_admin
+        LEFT JOIN ams_admin_role ON ams_admin.id=ams_admin_role.admin_id
+        LEFT JOIN ams_role_permission ON ams_admin_role.role_id=ams_role_permission.role_id
+        LEFT JOIN ams_permission ON ams_role_permission.permission_id=ams_permission.id
         WHERE
         username=#{username}
     </select>
@@ -147,9 +150,16 @@
 
     <sql id="AdminLoginQueryFields">
         <if test="true">
-            id, username, nickname, password, avatar, phone,
-            email, description, enable, last_login_ip, login_count,
-            gmt_last_login
+            ams_admin.id,
+            ams_admin.username,
+            ams_admin.nickname,
+            ams_admin.password,
+            ams_admin.avatar,
+            ams_admin.phone,
+            ams_admin.email,
+            ams_admin.description,
+            ams_admin.enable,
+            ams_permission.value
         </if>
     </sql>
 
@@ -185,9 +195,11 @@
         <result column="email" property="email"/>
         <result column="description" property="description"/>
         <result column="enable" property="enable"/>
-        <result column="last_login_ip" property="lastLoginIp"/>
-        <result column="login_count" property="loginCount"/>
-        <result column="gmt_last_login" property="gmtLastLogin"/>
+        <collection property="permissions" ofType="String">
+            <constructor>
+                <arg column="value"/>
+            </constructor>
+        </collection>
     </resultMap>
 
     <resultMap id="ListResultMap" type="cn.tedu.csmall.passport.pojo.vo.AdminListItemVO">

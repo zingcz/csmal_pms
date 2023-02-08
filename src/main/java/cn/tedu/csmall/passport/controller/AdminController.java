@@ -2,6 +2,7 @@ package cn.tedu.csmall.passport.controller;
 
 import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
 import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
+import cn.tedu.csmall.passport.pojo.vo.AdminListItemVO;
 import cn.tedu.csmall.passport.service.IAdminService;
 import cn.tedu.csmall.passport.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -9,9 +10,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 处理管理员相关请求的控制器
@@ -28,12 +33,12 @@ public class AdminController {
     @Autowired
     private IAdminService adminService;
 
-//    @PostMapping("/login")
-//    public JsonResult<Void> login(AdminLoginDTO adminLoginDTO) {
-//        log.debug("开始处理【管理员登录】的请求，参数：{}", adminLoginDTO);
-//        adminService.login(adminLoginDTO);
-//        return JsonResult.ok();
-//    }
+    @GetMapping("/login")
+    public JsonResult<Void> login(AdminLoginDTO adminLoginDTO) {
+        log.debug("开始处理【管理员登录】的请求，参数：{}", adminLoginDTO);
+        adminService.login(adminLoginDTO);
+        return JsonResult.ok();
+    }
 
     public AdminController() {
         log.debug("创建控制器对象：AdminController");
@@ -47,6 +52,17 @@ public class AdminController {
         log.debug("开始处理【添加管理员】的请求，参数：{}", adminAddNewDTO);
         adminService.addNew(adminAddNewDTO);
         return JsonResult.ok();
+    }
+
+    // http://localhost:9081/admins/list
+    @ApiOperation("查询管理员列表")
+    @ApiOperationSupport(order = 300)
+    @PreAuthorize("hasAuthority('/ams/admin/read')")
+    @PostMapping("/list")
+    public JsonResult<List<AdminListItemVO>> list() {
+        log.debug("开始处理【查询管理员】的请求)");
+        List<AdminListItemVO> list = adminService.list();
+        return JsonResult.ok(list);
     }
 
 }
