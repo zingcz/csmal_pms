@@ -1,6 +1,7 @@
 package cn.tedu.csmall.passport.controller;
 
 import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
+import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
 import cn.tedu.csmall.passport.service.IAdminService;
 import cn.tedu.csmall.passport.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -26,6 +27,13 @@ public class AdminController {
 
     @Autowired
     private IAdminService adminService;
+
+//    @PostMapping("/login")
+//    public JsonResult<Void> login(AdminLoginDTO adminLoginDTO) {
+//        log.debug("开始处理【管理员登录】的请求，参数：{}", adminLoginDTO);
+//        adminService.login(adminLoginDTO);
+//        return JsonResult.ok();
+//    }
 
     public AdminController() {
         log.debug("创建控制器对象：AdminController");

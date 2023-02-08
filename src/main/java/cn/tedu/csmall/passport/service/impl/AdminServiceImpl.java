@@ -36,13 +36,12 @@ public class AdminServiceImpl implements IAdminService {
         log.debug("创建业务对象：AdminServiceImpl");
     }
 
-    @Override
-    public void login(AdminLoginDTO adminLoginDTO){
-        AdminLoginVO adminLoginVO = adminMapper.getStandardByName(adminLoginDTO.getUsername());
-        Authentication authentication = new UsernamePasswordAuthenticationToken(adminLoginVO.getUsername(),adminLoginVO.getPassword());
-        authenticationManager.authenticate(authentication);
-    }
-    
+//    @Override
+//    public void login(AdminLoginDTO adminLoginDTO){
+//        AdminLoginVO adminLoginVO = adminMapper.getStandardByName(adminLoginDTO.getUsername());
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(adminLoginVO.getUsername(),adminLoginVO.getPassword());
+//        authenticationManager.authenticate(authentication);
+//    }
     @Override
     public void addNew(AdminAddNewDTO adminAddNewDTO) {
         log.debug("开始处理【添加管理员】的业务，参数：{}", adminAddNewDTO);

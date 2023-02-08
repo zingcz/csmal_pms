@@ -10,13 +10,13 @@ public class PasswordEncoderTest {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    @Test
-    public void test(){
-        String password = "123";
-//        for(int i = 0; i< 50 ; i++){
-            String encodePassword = passwordEncoder.encode(password);
-            System.out.println(encodePassword);
-            System.out.println(passwordEncoder.matches(password,encodePassword));
-//        }
-    }
+//    @Test
+//    public void test(){
+//        String password = "123";
+////        for(int i = 0; i< 50 ; i++){
+//            String encodePassword = passwordEncoder.encode(password);
+//            System.out.println(encodePassword);
+//            System.out.println(passwordEncoder.matches(password,encodePassword));
+////        }
+//    }
 }

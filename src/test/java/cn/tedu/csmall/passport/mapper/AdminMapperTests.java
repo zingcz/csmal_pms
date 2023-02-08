@@ -104,7 +104,7 @@ public class AdminMapperTests {
 
     @Test
     void getAdminLoginByName() {
-        String name = "root";
+        String name = "test";
         AdminLoginVO queryResult = mapper.getStandardByName(name);
         log.debug("根据name【{}】查询数据详情完成，查询结果：{}", name, queryResult);
     }
