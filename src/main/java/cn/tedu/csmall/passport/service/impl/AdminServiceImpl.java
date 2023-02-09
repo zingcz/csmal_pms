@@ -60,10 +60,11 @@ public class AdminServiceImpl implements IAdminService {
         //拿取权限集合转为JSON字符
         Collection<GrantedAuthority> authorities = principal.getAuthorities();
         String authoritiesJsonString = JSON.toJSONString(authorities);
+        System.out.println(authoritiesJsonString);
 
         claims.put("username",principal.getUsername());
         claims.put("id",principal.getId());
-        claims.put(authoritiesJsonString,principal.getAuthorities());
+        claims.put("authoritiesJsonString",authoritiesJsonString);
 
         String jwt =  Jwts.builder()
                 .setHeaderParam("alg", "HS256")
