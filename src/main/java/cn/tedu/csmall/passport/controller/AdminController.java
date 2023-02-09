@@ -11,6 +11,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,7 @@ public class AdminController {
     private IAdminService adminService;
 
     @GetMapping("/login")
+    @ApiOperation("管理员登录")
     public JsonResult<Void> login(AdminLoginDTO adminLoginDTO) {
         log.debug("开始处理【管理员登录】的请求，参数：{}", adminLoginDTO);
         adminService.login(adminLoginDTO);
@@ -48,7 +51,7 @@ public class AdminController {
     @ApiOperation("添加管理员")
     @ApiOperationSupport(order = 100)
     @PostMapping("/add-new")
-    public JsonResult addNew(AdminAddNewDTO adminAddNewDTO) {
+    public JsonResult<Void> addNew(AdminAddNewDTO adminAddNewDTO) {
         log.debug("开始处理【添加管理员】的请求，参数：{}", adminAddNewDTO);
         adminService.addNew(adminAddNewDTO);
         return JsonResult.ok();
@@ -59,7 +62,7 @@ public class AdminController {
     @ApiOperationSupport(order = 300)
     @PreAuthorize("hasAuthority('/ams/admin/read')")
     @PostMapping("/list")
-    public JsonResult<List<AdminListItemVO>> list() {
+    public JsonResult<List<AdminListItemVO>> list(@AuthenticationPrincipal UserDetails userDetails) {
         log.debug("开始处理【查询管理员】的请求)");
         List<AdminListItemVO> list = adminService.list();
         return JsonResult.ok(list);
