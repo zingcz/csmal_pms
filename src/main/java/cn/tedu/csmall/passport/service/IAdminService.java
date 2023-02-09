@@ -28,7 +28,7 @@ public interface IAdminService {
      *
      * @param adminAddNewDTO 管理员数据
      */
-    void login(AdminLoginDTO adminAddNewDTO);
+    String login(AdminLoginDTO adminAddNewDTO);
     /**
      * 查询管理员列表
      *

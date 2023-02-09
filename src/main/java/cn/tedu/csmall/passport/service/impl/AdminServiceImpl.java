@@ -6,20 +6,22 @@ import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
 import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
 import cn.tedu.csmall.passport.pojo.entity.Admin;
 import cn.tedu.csmall.passport.pojo.vo.AdminListItemVO;
-import cn.tedu.csmall.passport.pojo.vo.AdminLoginVO;
+import cn.tedu.csmall.passport.security.AdminDetails;
 import cn.tedu.csmall.passport.service.IAdminService;
+import cn.tedu.csmall.passport.web.JsonResult;
 import cn.tedu.csmall.passport.web.ServiceCode;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.security.Principal;
+import java.util.*;
 
 /**
  * 处理管理员数据的业务实现类
@@ -42,13 +44,29 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public void login(AdminLoginDTO adminLoginDTO){
+    public String login(AdminLoginDTO adminLoginDTO){
         Authentication authentication = new UsernamePasswordAuthenticationToken(adminLoginDTO.getUsername(),adminLoginDTO.getPassword());
         Authentication authenticationResult = authenticationManager.authenticate(authentication);
         log.debug("认证通过，认证结果：{}", authenticationResult);
         log.debug("认证通过，认证结果中的当事人：{}", authenticationResult.getPrincipal());
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        securityContext.setAuthentication(authenticationResult);
+
+        Date date = new Date(System.currentTimeMillis()+5 *60 *1000);
+        String secretKey = "dasdafgf8r7g48re74g8er94g89e4rg89e4r";
+
+        Map<String,Object> claims = new HashMap<>();
+        AdminDetails principal = (AdminDetails) authenticationResult.getPrincipal();
+        claims.put("username",principal.getUsername());
+        claims.put("id",principal.getId());
+
+        String jwt =  Jwts.builder()
+                .setHeaderParam("alg", "HS256")
+                .setHeaderParam("typ", "JWT")
+                .setClaims(claims)
+                .setExpiration(date)
+                .signWith(SignatureAlgorithm.HS256,secretKey)
+                .compact();
+
+        return jwt;
     }
     @Override
     public void addNew(AdminAddNewDTO adminAddNewDTO) {
