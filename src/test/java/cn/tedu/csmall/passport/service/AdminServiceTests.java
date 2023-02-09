@@ -41,4 +41,37 @@ public class AdminServiceTests {
         }
     }
 
+    @Test
+    void delete(){
+        try {
+            service.deleteById(7L);
+        } catch (ServiceException e) {
+            log.debug(e.getMessage());
+        }
+    }
+
+    @Test
+    void setEnable() {
+        Long id = 5L;
+
+        try {
+            service.enable(id);
+            log.debug("启用类别成功！");
+        } catch (ServiceException e) {
+            log.debug("捕获到异常，其中的消息：{}", e.getMessage());
+        }
+    }
+
+    @Test
+    void setDisable() {
+        Long id = 5L;
+
+        try {
+            service.disable(id);
+            log.debug("禁用类别成功！");
+        } catch (ServiceException e) {
+            log.debug("捕获到异常，其中的消息：{}", e.getMessage());
+        }
+    }
+
 }

@@ -2,6 +2,9 @@ package cn.tedu.csmall.passport.config;
 
 
 import cn.tedu.csmall.passport.filter.JwtAuthorizationFilter;
+import cn.tedu.csmall.passport.web.JsonResult;
+import cn.tedu.csmall.passport.web.ServiceCode;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,9 +12,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -59,9 +70,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
+
         // 调用formLogin()表示启用登录表单页和登出页
         // 如果未调用此方法，则没有登录表单页和登出页，且，当视为“未通过认证时”，将响应403
 //         http.formLogin();
+
+
+        http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
+            @Override
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+                String message = "未检测到登录，请登录！（在开发阶段，看到此提示时，请检查客户端是否携带了JWT向服务器端发起请求）";
+                JsonResult<Void> jsonResult = JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
+                response.setContentType("application/json; charset=utf-8");
+                PrintWriter printWriter = response.getWriter();
+                printWriter.println(JSON.toJSONString(jsonResult));
+                printWriter.close();
+            }
+        });
     }
 
 }

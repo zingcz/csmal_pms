@@ -7,16 +7,15 @@ import cn.tedu.csmall.passport.service.IAdminService;
 import cn.tedu.csmall.passport.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -66,6 +65,43 @@ public class AdminController {
         log.debug("开始处理【查询管理员】的请求)");
         List<AdminListItemVO> list = adminService.list();
         return JsonResult.ok(list);
+    }
+
+    // http://localhost:4090/admins/9527/enable
+    @PostMapping("/{id:[0-9]+}/enable")
+    @ApiOperation("启用类别")
+    @ApiOperationSupport(order = 310)
+    @ApiImplicitParam(name = "id", value = "类别ID", required = true, example = "9527", dataType = "long")
+    public JsonResult<Void> setEnable(@Range(min = 1, max = 1000000, message = "启用类别失败，类别ID非法！")
+                                      @PathVariable Long id) {
+        log.debug("开始处理【启用类别】的请求，参数：{}", id);
+        adminService.enable(id);
+
+        return JsonResult.ok();
+    }
+
+    // http://localhost:4090/admins/9527/disable
+    @PostMapping("/{id:[0-9]+}/disable")
+    @ApiOperation("禁用类别")
+    @ApiOperationSupport(order = 311)
+    @ApiImplicitParam(name = "id", value = "类别ID", required = true, example = "9527", dataType = "long")
+    public JsonResult<Void> setDisable(@Range(min = 1, max = 1000000, message = "禁用类别失败，类别ID非法！")
+                                       @PathVariable Long id) {
+        log.debug("开始处理【禁用类别】的请求，参数：{}", id);
+        adminService.disable(id);
+        return JsonResult.ok();
+    }
+
+    // http://localhost:4090/admins/9527/delete
+    @PostMapping("/{id:[0-9]+}/delete")
+    @ApiOperation("根据id删除类别")
+    @ApiOperationSupport(order = 200)
+    @ApiImplicitParam(name = "id", value = "类别ID", required = true, example = "9527", dataType = "long")
+    public JsonResult<Void> delete(@Range(min = 1, max = 1000000, message = "删除类别失败，类别ID非法！")
+                                   @PathVariable Long id) {
+        log.debug("开始处理【根据id删除类别】的请求，参数：{}", id);
+        adminService.deleteById(id);
+        return JsonResult.ok();
     }
 
 }

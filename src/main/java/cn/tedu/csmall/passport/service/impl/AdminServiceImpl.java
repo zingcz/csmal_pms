@@ -6,9 +6,9 @@ import cn.tedu.csmall.passport.pojo.dto.AdminAddNewDTO;
 import cn.tedu.csmall.passport.pojo.dto.AdminLoginDTO;
 import cn.tedu.csmall.passport.pojo.entity.Admin;
 import cn.tedu.csmall.passport.pojo.vo.AdminListItemVO;
+import cn.tedu.csmall.passport.pojo.vo.AdminStandardVO;
 import cn.tedu.csmall.passport.security.AdminDetails;
 import cn.tedu.csmall.passport.service.IAdminService;
-import cn.tedu.csmall.passport.web.JsonResult;
 import cn.tedu.csmall.passport.web.ServiceCode;
 import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Jwts;
@@ -22,7 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
+
 import java.util.*;
 
 /**
@@ -52,7 +52,7 @@ public class AdminServiceImpl implements IAdminService {
         log.debug("认证通过，认证结果：{}", authenticationResult);
         log.debug("认证通过，认证结果中的当事人：{}", authenticationResult.getPrincipal());
 
-        Date date = new Date(System.currentTimeMillis()+ 5 * 60 * 1000);
+        Date date = new Date(System.currentTimeMillis() + 30 * 24 * 60 * 1000);
         String secretKey = "dasdafgf8r7g48re74g8er94g89e4rg89e4r";
 
         Map<String,Object> claims = new HashMap<>();
@@ -141,4 +141,62 @@ public class AdminServiceImpl implements IAdminService {
     public List<AdminListItemVO> list(){
         return adminMapper.list();
     }
+
+    @Override
+    public void deleteById(Long id){
+        AdminStandardVO admin = adminMapper.getStandardById(id);
+        if( admin == null || id == 1){
+            String message = "数据不存在";
+            log.debug("数据不存在");
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        int count = adminMapper.deleteById(id);
+        if(count != 1){
+            String message = "操作失败服务器忙";
+            log.debug("操作失败服务器忙");
+            throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+        }
+        log.debug("删除成功");
+    }
+
+    @Override
+    public void enable(Long id) {
+        updateEnableById(id, 1);
+    }
+
+    @Override
+    public void disable(Long id) {
+        updateEnableById(id, 0);
+    }
+
+        public void updateEnableById (Long id,Integer enable){
+            String states[] = {"禁用", "启用"};
+
+
+            AdminStandardVO adminStandardVO = adminMapper.getStandardById(id);
+            if (adminStandardVO == null || id == 1) {
+                String message = "数据不存在";
+                log.debug(message);
+                throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+            }
+
+            if (adminStandardVO.getEnable().equals(enable)) {
+                String message = "操作失败，管理员已经是" + states[enable]+"状态";
+                log.debug(message);
+                throw new ServiceException(ServiceCode.ERR_CONFLICT, message);
+            }
+
+            Admin admin = new Admin();
+            admin.setId(id);
+            admin.setEnable(enable);
+            int count = adminMapper.update(admin);
+            if (count != 1) {
+                String message = "操作失败服务器忙";
+                log.debug("操作失败服务器忙");
+                throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+            }
+            log.debug("启用成功");
+        }
 }
+
