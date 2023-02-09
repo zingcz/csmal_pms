@@ -10,6 +10,7 @@ import cn.tedu.csmall.passport.security.AdminDetails;
 import cn.tedu.csmall.passport.service.IAdminService;
 import cn.tedu.csmall.passport.web.JsonResult;
 import cn.tedu.csmall.passport.web.ServiceCode;
+import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -50,13 +52,18 @@ public class AdminServiceImpl implements IAdminService {
         log.debug("认证通过，认证结果：{}", authenticationResult);
         log.debug("认证通过，认证结果中的当事人：{}", authenticationResult.getPrincipal());
 
-        Date date = new Date(System.currentTimeMillis()+5 *60 *1000);
+        Date date = new Date(System.currentTimeMillis()+ 5 * 60 * 1000);
         String secretKey = "dasdafgf8r7g48re74g8er94g89e4rg89e4r";
 
         Map<String,Object> claims = new HashMap<>();
         AdminDetails principal = (AdminDetails) authenticationResult.getPrincipal();
+        //拿取权限集合转为JSON字符
+        Collection<GrantedAuthority> authorities = principal.getAuthorities();
+        String authoritiesJsonString = JSON.toJSONString(authorities);
+
         claims.put("username",principal.getUsername());
         claims.put("id",principal.getId());
+        claims.put(authoritiesJsonString,principal.getAuthorities());
 
         String jwt =  Jwts.builder()
                 .setHeaderParam("alg", "HS256")
