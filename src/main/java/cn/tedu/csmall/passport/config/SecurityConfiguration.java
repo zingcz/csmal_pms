@@ -1,6 +1,8 @@
 package cn.tedu.csmall.passport.config;
 
 
+import cn.tedu.csmall.passport.filter.JwtAuthorizationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,10 +11,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private JwtAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,6 +57,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest() // 任何请求（基于第一匹配原则，此处表示：除了以上配置过的以外的其它所有请求）
                 .authenticated(); // 以上配置的请求需要是通过认证的
 
+        http.addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         // 调用formLogin()表示启用登录表单页和登出页
         // 如果未调用此方法，则没有登录表单页和登出页，且，当视为“未通过认证时”，将响应403
