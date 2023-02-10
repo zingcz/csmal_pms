@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -59,10 +59,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // 禁用“防止伪造的跨域攻击”这种防御机制
         http.csrf().disable();
+        http.cors();
 
         // 配置URL的访问控制
         // 注意：基于第一匹配原则，覆盖范围越大的匹配方法，应该配置在更靠后的代码位置
         http.authorizeRequests() // 配置URL的访问控制
+                .mvcMatchers(HttpMethod.OPTIONS, "/**")
+                .permitAll()
                 .mvcMatchers(urls) // 匹配某些URL
                 .permitAll() // 直接许可，即：不需要通过认证就可以直接访问
                 .anyRequest() // 任何请求（基于第一匹配原则，此处表示：除了以上配置过的以外的其它所有请求）
@@ -78,7 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPoint() {
             @Override
-            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException {
                 String message = "未检测到登录，请登录！（在开发阶段，看到此提示时，请检查客户端是否携带了JWT向服务器端发起请求）";
                 JsonResult<Void> jsonResult = JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
                 response.setContentType("application/json; charset=utf-8");

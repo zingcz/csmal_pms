@@ -34,7 +34,7 @@ public class AdminController {
     @Autowired
     private IAdminService adminService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiOperation("管理员登录")
     public JsonResult<String> login(AdminLoginDTO adminLoginDTO) {
         log.debug("开始处理【管理员登录】的请求，参数：{}", adminLoginDTO);
