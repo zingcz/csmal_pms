@@ -24,12 +24,13 @@ public class AdminServiceTests {
         admin.setPassword("123456");
         admin.setPhone("13900139100");
         admin.setEmail("13900139100@baidu.com");
-
+        Long[] ids = new Long[]{2L};
+        admin.setRoleIds(ids);
         try {
             service.addNew(admin);
             log.debug("添加数据完成！");
         } catch (ServiceException e) {
-            log.debug("添加数据失败！名称已经被占用！");
+            log.debug(e.getMessage());
         }
     }
 
@@ -44,7 +45,7 @@ public class AdminServiceTests {
     @Test
     void delete(){
         try {
-            service.deleteById(7L);
+            service.deleteById(1L);
         } catch (ServiceException e) {
             log.debug(e.getMessage());
         }

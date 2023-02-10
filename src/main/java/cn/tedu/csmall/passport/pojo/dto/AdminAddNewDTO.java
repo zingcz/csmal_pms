@@ -52,5 +52,9 @@ public class AdminAddNewDTO implements Serializable {
      * 是否启用，1=启用，0=未启用
      */
     private Integer enable;
+    /**
+     *  添加的管理员角色id数组
+     */
+    private Long[] roleIds;
 
 }

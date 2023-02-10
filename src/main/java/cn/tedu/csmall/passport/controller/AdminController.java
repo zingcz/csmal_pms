@@ -50,6 +50,7 @@ public class AdminController {
     @ApiOperation("添加管理员")
     @ApiOperationSupport(order = 100)
     @PostMapping("/add-new")
+    @ApiImplicitParam(name = "roleIds", value = "角色ID", required = true, example = "1", dataType = "long")
     public JsonResult<Void> addNew(AdminAddNewDTO adminAddNewDTO) {
         log.debug("开始处理【添加管理员】的请求，参数：{}", adminAddNewDTO);
         adminService.addNew(adminAddNewDTO);
